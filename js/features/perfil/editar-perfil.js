@@ -260,17 +260,17 @@ function _pintar(root, estado, onGuardado) {
       </section>
       <section class="perfil-card ep-form-card">
         <label class="ep-row">
-          <img class="ep-social-icon" src="/assets/icons/instagram.webp" alt="Instagram" />
+          <img class="ep-social-icon" src="assets/icons/instagram.webp" alt="Instagram" />
           <input type="url" id="ep-instagram" class="ep-input" placeholder="Pega aquí tu link de Instagram" value="${_escapeAttr(estado.original.instagram)}" />
         </label>
         <div class="ep-divider"></div>
         <label class="ep-row">
-          <img class="ep-social-icon" src="/assets/icons/facebook.png" alt="Facebook" />
+          <img class="ep-social-icon" src="assets/icons/facebook.png" alt="Facebook" />
           <input type="url" id="ep-facebook" class="ep-input" placeholder="Pega aquí tu link de Facebook" value="${_escapeAttr(estado.original.facebook)}" />
         </label>
         <div class="ep-divider"></div>
         <label class="ep-row">
-          <img class="ep-social-icon" src="/assets/icons/tiktok.png" alt="TikTok" />
+          <img class="ep-social-icon" src="assets/icons/tiktok.png" alt="TikTok" />
           <input type="url" id="ep-tiktok" class="ep-input" placeholder="Pega aquí tu link de TikTok" value="${_escapeAttr(estado.original.tiktok)}" />
         </label>
       </section>

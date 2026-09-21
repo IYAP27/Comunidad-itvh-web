@@ -62,7 +62,7 @@ export async function render(contenedor) {
     <div class="shell-app">
       <header class="shell-appbar">
         <button type="button" id="btn-drawer" class="btn-icono" aria-label="Abrir menú">☰</button>
-        <img src="/assets/images/appbar_modo_oscuro.png" alt="Comunidad ITVH" class="shell-logo" />
+        <img src="assets/images/appbar_modo_oscuro.png" alt="Comunidad ITVH" class="shell-logo" />
 
         <nav class="shell-tabbar">
           ${tabs.map((t) => `
@@ -371,7 +371,7 @@ async function _enriquecerYMostrarBanner(row) {
     ) {
       const n = new Notification('Comunidad ITVH', {
         body: texto,
-        icon: fotoUrl || '/assets/images/icon-192.png',
+        icon: fotoUrl || 'assets/images/icon-192.png',
         tag: `social-${row.id ?? Date.now()}`,
       });
       n.onclick = () => {

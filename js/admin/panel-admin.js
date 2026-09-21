@@ -139,7 +139,7 @@ function _inyectarCss() {
   const link = document.createElement('link');
   link.id = 'admin-web-css';
   link.rel = 'stylesheet';
-  link.href = '/css/admin.css';
+  link.href = 'css/admin.css';
   document.head.appendChild(link);
 }
 

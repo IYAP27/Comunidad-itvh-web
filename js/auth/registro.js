@@ -30,7 +30,7 @@ export function render(contenedor) {
   contenedor.innerHTML = `
     <div class="pantalla-auth">
       <div class="tarjeta-auth glass">
-        <img src="/assets/icons/splash_foreground.png" alt="Comunidad ITVH" class="logo-auth" />
+        <img src="assets/icons/splash_foreground.png" alt="Comunidad ITVH" class="logo-auth" />
         <h1 class="titulo-auth">Crear cuenta</h1>
         <p class="subtitulo-auth">Completa tu información para registrarte</p>
 

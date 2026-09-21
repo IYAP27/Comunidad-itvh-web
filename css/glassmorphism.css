@@ -27,7 +27,7 @@
       rgba(0, 0, 0, 0.45) 50%,
       rgba(0, 0, 0, 0.85) 100%
     ),
-    url('/assets/images/tec_villahermosa.webp') center / cover no-repeat fixed;
+    url('../assets/images/tec_villahermosa.webp') center / cover no-repeat fixed;
 }
 /* En móviles el background fixed fuerza repintados costosos al hacer scroll. */
 @media (max-width: 768px), (pointer: coarse) {

@@ -30,7 +30,7 @@ export function renderDonaciones(root, onVolver) {
     <div class="donaciones-contenido">
       <div class="donaciones-logo-wrap">
         <div class="donaciones-logo">
-          <img src="/assets/icons/splash_foreground.png" alt="" />
+          <img src="assets/icons/splash_foreground.png" alt="" />
         </div>
         <span class="donaciones-badge">☕</span>
       </div>

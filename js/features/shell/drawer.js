@@ -23,17 +23,17 @@ export function render(root, { onCerrar } = {}) {
 
       <p class="drawer-seccion">PLANTEL</p>
 
-      <button class="drawer-tile-hero" id="dr-conoce" style="background-image:url('/assets/images/drawer_imagen1.webp')">
+      <button class="drawer-tile-hero" id="dr-conoce" style="background-image:url('assets/images/drawer_imagen1.webp')">
         <span class="drawer-tile-icono">📍</span>
         <span class="drawer-tile-texto"><strong>Conoce el plantel</strong><small>Descubre nuestras instalaciones</small></span>
       </button>
 
       <div class="drawer-grid-fila">
-        <button class="drawer-tile-grid" id="dr-historia" style="background-image:url('/assets/images/drawer_imagen2.webp')">
+        <button class="drawer-tile-grid" id="dr-historia" style="background-image:url('assets/images/drawer_imagen2.webp')">
           <span class="drawer-tile-grid-icono">📖</span>
           <span class="drawer-tile-grid-label">Un poco de historia</span>
         </button>
-        <button class="drawer-tile-grid" id="dr-oferta" style="background-image:url('/assets/images/drawer_imagen3.webp')">
+        <button class="drawer-tile-grid" id="dr-oferta" style="background-image:url('assets/images/drawer_imagen3.webp')">
           <span class="drawer-tile-grid-icono">➕</span>
           <span class="drawer-tile-grid-label">Oferta educativa</span>
         </button>
@@ -52,11 +52,11 @@ export function render(root, { onCerrar } = {}) {
       <p class="drawer-seccion">PLATAFORMAS</p>
       <div class="drawer-plataformas">
         <button class="plataforma-btn" id="dr-sie">
-          <img src="/assets/images/sie_logo.png" alt="SIE" />
+          <img src="assets/images/sie_logo.png" alt="SIE" />
           <small>SIE</small>
         </button>
         <button class="plataforma-btn" id="dr-sws">
-          <img src="/assets/images/sws_logo.webp" alt="SWS" />
+          <img src="assets/images/sws_logo.webp" alt="SWS" />
           <small>SWS</small>
         </button>
       </div>

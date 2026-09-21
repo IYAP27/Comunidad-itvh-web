@@ -21,7 +21,7 @@ export function renderSolicitar(contenedor) {
 
 function _mostrarFormulario(tarjeta) {
   tarjeta.innerHTML = `
-    <img src="/assets/icons/splash_foreground.png" alt="Comunidad ITVH" class="logo-auth" />
+    <img src="assets/icons/splash_foreground.png" alt="Comunidad ITVH" class="logo-auth" />
     <h1 class="titulo-auth">¿Olvidaste tu contraseña?</h1>
     <p class="subtitulo-auth">Te enviaremos un enlace para restablecerla.</p>
 
@@ -121,7 +121,7 @@ export function renderNuevaContrasena(contenedor) {
   const tarjeta = contenedor.querySelector('#tarjeta-nueva-password');
 
   tarjeta.innerHTML = `
-    <img src="/assets/icons/splash_foreground.png" alt="Comunidad ITVH" class="logo-auth" />
+    <img src="assets/icons/splash_foreground.png" alt="Comunidad ITVH" class="logo-auth" />
     <h1 class="titulo-auth">Nueva contraseña</h1>
     <p class="subtitulo-auth">Elige una contraseña segura de al menos 8 caracteres.</p>
 

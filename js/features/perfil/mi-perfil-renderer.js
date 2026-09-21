@@ -116,9 +116,9 @@ export function htmlPerfilPostCard(post, index) {
 
 function htmlRedes(perfil) {
   const redes = [
-    ['instagram_url', 'Instagram', '/assets/icons/instagram.webp'],
-    ['facebook_url', 'Facebook', '/assets/icons/facebook.png'],
-    ['tiktok_url', 'TikTok', '/assets/icons/tiktok.png'],
+    ['instagram_url', 'Instagram', 'assets/icons/instagram.webp'],
+    ['facebook_url', 'Facebook', 'assets/icons/facebook.png'],
+    ['tiktok_url', 'TikTok', 'assets/icons/tiktok.png'],
   ].filter(([key]) => perfil[key]);
   if (!redes.length) return '';
   return `

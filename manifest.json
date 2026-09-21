@@ -2,7 +2,7 @@
 {
 	"name": "Comunidad ITVH",
 	"short_name": "ITVH",
-	"start_url": "/",
+	"start_url": "./",
 	"display": "standalone",
 	"background_color": "#000000",
 	"theme_color": "#1a1a1a",
