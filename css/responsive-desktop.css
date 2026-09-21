@@ -1,0 +1,189 @@
+/* ═════════════════════════════════════════════════════════════════
+   responsive-desktop.css
+
+   La app se diseñó mobile-first (pensada para pantalla de celular),
+   así que en pantallas anchas el contenido se estiraba de borde a
+   borde de la ventana en vez de mantener un ancho de lectura cómodo.
+
+   Este archivo NO toca el layout mobile (todo va dentro de un
+   @media min-width:768px) — solo agrega, en pantallas grandes, el
+   mismo patrón de columna centrada que usan apps tipo
+   Instagram/Facebook/X para su feed principal.
+
+   Debe cargarse DESPUÉS de shell.css, social.css y marketplace.css
+   en index.html para que estas reglas ganen la cascada.
+   ═════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 768px) {
+  :root {
+    /* Ancho de la columna central (tipo feed de Facebook). Ajustable
+       en un solo lugar si luego se quiere más ancho/angosto. */
+    --app-max-width: 680px;
+  }
+
+  /* Fondo detrás de la columna, para que se note el límite y no se
+     sienta que "falta contenido" a los lados. */
+  html.tema-oscuro body { background: #0a0a0a; }
+  html.tema-claro body  { background: #e9e9ee; }
+
+  /* ── Shell principal: AppBar + TabBar + contenido de la pestaña ── */
+
+  .shell-appbar {
+    padding-left: max(16px, calc(50% - (var(--app-max-width) / 2)));
+    padding-right: max(16px, calc(50% - (var(--app-max-width) / 2)));
+  }
+
+  .shell-tabbar {
+    max-width: var(--app-max-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .shell-tab-contenido {
+    width: 100%;
+    max-width: var(--app-max-width);
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    /* FIX sep 2026: con margin:auto dentro del grid, width:auto podía
+       resolverse al ancho intrínseco del contenido. Por eso Admin se
+       hacía más angosto al cambiar Dashboard → Usuarios → Marketplace
+       → Reportes. width:100% mantiene estable la columna. */
+    /* Línea sutil a los lados, como el timeline centrado de X/Twitter */
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  html.tema-claro .shell-tab-contenido {
+    border-left-color: rgba(0, 0, 0, 0.08);
+    border-right-color: rgba(0, 0, 0, 0.08);
+  }
+
+  /* ── Marketplace: tiene su propio appbar y su propia tabbar interna ── */
+  /* .marketplace-home ya vive DENTRO de .shell-tab-contenido, así que
+     hereda el ancho limitado — solo falta corregir su tabbar flotante,
+     que usa position:fixed y por eso ignora el ancho del contenedor. */
+
+  .marketplace-tabbar {
+    left: 50%;
+    right: auto;
+    width: min(560px, calc(100vw - 24px));
+    transform: translateX(-50%);
+  }
+
+  /* ── Pestañas (Comunidad/Perfil/Market/Jaguares/UbicaTec) más grandes ── */
+  /* En el celular son iconitos apretados en una píldora; en pantalla
+     grande se ven perdidos del mismo tamaño, así que se agrandan. */
+  .shell-tab {
+    padding: 14px 8px;
+  }
+  .shell-tab svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* ── Encabezado interno del Marketplace ── */
+  /* Ya no aplica a "Comunidad" (ese título se eliminó y sus botones
+     se movieron al appbar principal, ver shell.js). El Marketplace
+     conserva el suyo, pegado arriba mientras el feed hace scroll. */
+  .marketplace-appbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg-app);
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   SIDEBAR FIJA (>=1100px) — estilo Facebook: una sola franja superior
+   que cubre TODO el ancho de la ventana (logo + iconos + avatar
+   juntos), y debajo, el menú (antes drawer deslizante) siempre
+   visible a la izquierda, junto a la columna de contenido centrada.
+   ═════════════════════════════════════════════════════════════════ */
+@media (min-width: 1100px) {
+  :root {
+    --sidebar-width: 280px;
+    --sidebar-gap: 28px;
+  }
+
+  /* Truco: en vez de limitar el ancho de TODO .shell-app (lo que
+     encogía también el appbar), se agregan columnas espaciadoras
+     "1fr" vacías a los lados. El appbar ocupa las 4 columnas de su
+     fila → 100% del viewport. La sidebar y el contenido solo ocupan
+     las columnas del medio → quedan centrados igual que antes. */
+  .shell-app {
+    display: grid;
+    grid-template-columns: 1fr var(--sidebar-width) minmax(0, var(--app-max-width)) 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "appbar  appbar   appbar  appbar"
+      "izq     sidebar  main    der";
+    column-gap: var(--sidebar-gap);
+  }
+
+  .shell-appbar {
+    grid-area: appbar;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* El botón ☰ ya no hace falta: el menú siempre está visible */
+  .shell-appbar #btn-drawer {
+    display: none;
+  }
+
+  /* La píldora de pestañas ya vive DENTRO del appbar (mismo <header>,
+     ver shell.js) para poder fundirse en una sola barra. En mobile se
+     manda a su propia línea (order+flex-basis, ver shell.css); aquí
+     se cancela eso y se centra dentro de la misma franja superior. */
+  .shell-tabbar {
+    order: 0;
+    flex-basis: auto;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .shell-tab-contenido {
+    grid-area: main;
+    min-height: 0;
+    /* el borde lateral ya no hace falta: la sidebar cumple ese rol visual */
+    border-left: none;
+    border-right: none;
+  }
+
+  /* La sidebar deja de ser un panel deslizante (position:fixed +
+     transform) y pasa a ser una columna normal dentro del grid.
+     Queda pegajosa para no perderse al hacer scroll del feed. */
+  .shell-drawer.sidebar-fija {
+    grid-area: sidebar;
+    position: sticky;
+    /* Antes decía top:8px — eso la pegaba CASI hasta arriba de la
+       ventana, quedando debajo del appbar (70px de alto) y tapada por
+       él. Tiene que pegarse justo por debajo del appbar, no del borde
+       de la ventana. */
+    top: calc(70px + 8px);
+    left: auto;
+    bottom: auto;
+    width: auto;
+    max-height: calc(100vh - 70px - 16px);
+    overflow-y: auto;
+    transform: none;
+    border-radius: 16px;
+  }
+
+  .shell-drawer-overlay {
+    display: none;
+  }
+
+  /* ── Marketplace: su barra flotante (Inicio/Publicar/Mi negocio) ── */
+  /* El fix de 768px la centra respecto al VIEWPORT completo (left:50%),
+     pero aquí ya no aplica: con la sidebar ocupando espacio a la
+     izquierda, el centro real de la columna de contenido ya no es el
+     centro de la ventana. Se recalcula su posición para que quede
+     centrada bajo esa columna en vez de encimarse con la sidebar. */
+  .marketplace-tabbar {
+    left: calc(50vw + (var(--sidebar-width) + var(--sidebar-gap)) / 2);
+  }
+}

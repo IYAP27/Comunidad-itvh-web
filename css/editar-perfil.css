@@ -1,0 +1,264 @@
+/* ═════════════════════════════════════════════════════════════════
+   editar-perfil.css
+   Estilos para editar-perfil.js. Reusa variables/clases ya
+   existentes de mi-perfil (perfil-appbar, perfil-card, btn-volver,
+   perfil-btn, spinner, perfil-cargando, perfil-estado) — si tu hoja
+   global ya define esas clases, este archivo solo agrega las nuevas
+   con prefijo `ep-`. Ajusta los valores de color a tu paleta real.
+   ═════════════════════════════════════════════════════════════════ */
+
+.editar-perfil-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow-y: auto;
+  background: var(--bg, #f2f2f7);
+}
+
+.editar-perfil-body {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.ep-guardar-appbar {
+  margin-left: auto;
+  padding: 6px 16px;
+  font-size: 14px;
+}
+
+/* ── Avatar ── */
+.ep-avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 18px;
+  gap: 4px;
+}
+
+.ep-avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 2.5px solid var(--accent, #007aff);
+  overflow: hidden;
+  background: var(--surface2, #efeff4);
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+}
+
+.ep-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ep-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 40px;
+  color: var(--text-hint, #b0b0b5);
+}
+
+.ep-nombre-preview {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.ep-usuario-preview {
+  font-size: 13px;
+  color: var(--text-sec, #6e6e73);
+}
+
+.ep-avatar-menu {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  background: var(--surface, #fff);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  z-index: 80;
+}
+
+.ep-avatar-menu button {
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  border-bottom: 0.5px solid var(--border, #e0e0e5);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.ep-avatar-menu button:last-child {
+  border-bottom: none;
+}
+
+.ep-avatar-menu .ep-danger {
+  color: var(--danger, #d32f2f);
+}
+
+/* ── Secciones / tarjetas ── */
+.ep-section-title {
+  padding: 0 6px 8px;
+  margin-top: 22px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.1px;
+  color: var(--text-sec, #6e6e73);
+  text-transform: uppercase;
+}
+
+.ep-section-subtitle {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-hint, #b0b0b5);
+}
+
+.ep-form-card {
+  padding: 4px 16px;
+}
+
+.ep-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.ep-row-label {
+  width: 72px;
+  flex-shrink: 0;
+  font-size: 15px;
+  color: var(--text-pri, #000);
+}
+
+.ep-input,
+.ep-select {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font-size: 15px;
+  color: var(--text-pri, #000);
+}
+
+.ep-select {
+  text-align: left;
+  direction: rtl; /* alinea el valor seleccionado a la derecha sin perder legibilidad del dropdown */
+}
+
+.ep-readonly {
+  flex: 1;
+  text-align: right;
+  font-size: 14px;
+  color: var(--text-sec, #6e6e73);
+}
+
+.ep-divider {
+  height: 0.5px;
+  background: var(--border, #e0e0e5);
+  margin-left: 0;
+}
+
+.ep-hint {
+  padding: 8px 6px 0;
+  font-size: 11px;
+  color: var(--text-hint, #b0b0b5);
+}
+
+.ep-textarea {
+  width: 100%;
+  min-height: 90px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-size: 14px;
+  color: var(--text-pri, #000);
+  background: transparent;
+  padding: 10px 0 4px;
+  font-family: inherit;
+}
+
+.ep-counter {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-hint, #b0b0b5);
+  padding-bottom: 8px;
+}
+
+.ep-social-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Botón guardar (versión completa, final del formulario) ── */
+.ep-guardar-full {
+  width: 100%;
+  height: 52px;
+  margin-top: 32px;
+  border: none;
+  border-radius: 18px;
+  background: var(--accent, #007aff);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+}
+
+.ep-guardar-full:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── Cerrar sesión ── */
+.ep-logout-card {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+.ep-logout {
+  border: none;
+  background: none;
+  color: var(--danger, #d32f2f);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+}
+
+/* ── Toast ── */
+.ep-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  z-index: 100;
+}

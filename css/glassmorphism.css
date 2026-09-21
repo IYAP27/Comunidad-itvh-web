@@ -1,0 +1,37 @@
+/* ═════════════════════════════════════════════════════════════════
+   glassmorphism.css
+   Mismo efecto que BackdropFilter + Container translúcido en Flutter.
+   ═════════════════════════════════════════════════════════════════ */
+
+.glass {
+  background: var(--bg-tarjeta);
+  border: 1.2px solid var(--borde-tarjeta);
+  border-radius: var(--radio-tarjeta);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+/* ── Fondo general de pantallas de auth: misma imagen del campus
+      + gradiente oscuro que usa Flutter (Positioned.fill + overlay). ── */
+.pantalla-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0.45) 50%,
+      rgba(0, 0, 0, 0.85) 100%
+    ),
+    url('/assets/images/tec_villahermosa.webp') center / cover no-repeat fixed;
+}
+/* En móviles el background fixed fuerza repintados costosos al hacer scroll. */
+@media (max-width: 768px), (pointer: coarse) {
+  .pantalla-auth {
+    background-attachment: scroll;
+  }
+}

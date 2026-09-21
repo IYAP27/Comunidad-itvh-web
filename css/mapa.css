@@ -1,0 +1,285 @@
+/* ═════════════════════════════════════════════════════════════════
+   mapa.css
+   Hub de UbicaTecNM (ubicatecnm.js) + mapa interactivo del campus
+   con Leaflet (mapa-interactivo.js). Traducción del diseño de
+   ubicatecnm.dart / mapa_interactivo.dart.dart.
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ── Hub ──────────────────────────────────────────────────────── */
+
+.ubicatec-hub {
+  padding: 12px 16px 24px;
+}
+
+.ubicatec-titulo-linea1,
+.ubicatec-titulo-linea2 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  line-height: 1.1;
+}
+.ubicatec-titulo-linea1 { color: var(--texto-alto); }
+.ubicatec-titulo-linea2 { color: var(--accent); }
+
+.ubicatec-boton-mapa {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  text-align: left;
+  box-shadow: var(--sombra-tarjeta);
+  transition: transform 0.12s ease;
+}
+.ubicatec-boton-mapa:active { transform: scale(0.98); }
+
+.ubicatec-boton-mapa-icono {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: var(--accent-suave);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.ubicatec-boton-mapa-texto { flex: 1; min-width: 0; }
+.ubicatec-boton-mapa-titulo {
+  color: var(--texto-alto);
+  font-size: 15px;
+  font-weight: 700;
+}
+.ubicatec-boton-mapa-sub {
+  color: var(--texto-bajo);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+.ubicatec-boton-mapa-chevron { color: var(--texto-bajo); font-size: 20px; }
+
+.ubicatec-seccion-titulo {
+  margin-top: 28px;
+  color: var(--texto-alto);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.ubicatec-seccion-sub {
+  color: var(--texto-bajo);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.ubicatec-video-card {
+  margin-top: 14px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  box-shadow: var(--sombra-tarjeta);
+}
+.ubicatec-video-miniatura {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #111;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  display: block;
+}
+.ubicatec-video-miniatura img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.ubicatec-video-play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.15);
+}
+.ubicatec-video-play span {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 26px;
+}
+.ubicatec-video-miniatura iframe {
+  width: 100%; height: 100%; border: none; display: block;
+}
+.ubicatec-video-titulo {
+  padding: 12px 14px 14px;
+  color: var(--texto-alto);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ── Pantalla del mapa (pushed-screen) ───────────────────────── */
+
+.mapa-pantalla { display: flex; flex-direction: column; height: 100%; }
+
+.mapa-appbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--bg-card-oscuro);
+  border-bottom: 1px solid var(--div-oscuro);
+  flex-shrink: 0;
+}
+.mapa-appbar-titulo {
+  color: var(--texto-alto);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mapa-cuerpo { position: relative; flex: 1; min-height: 0; }
+.mapa-leaflet { position: absolute; inset: 0; }
+
+.mapa-cargando {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-app);
+  z-index: 5;
+}
+.mapa-spinner {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--div-oscuro);
+  border-top-color: var(--accent);
+  animation: mapa-girar 0.8s linear infinite;
+}
+@keyframes mapa-girar { to { transform: rotate(360deg); } }
+
+/* Marcador tipo "globito" (equivalente al bitmap de canvas de Flutter) */
+.mapa-marker-edificio {
+  background: #1B365D;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+.mapa-marker-edificio::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: -6px;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1B365D;
+}
+
+/* ── Buscador flotante ────────────────────────────────────────── */
+
+.mapa-buscador-wrap {
+  position: absolute;
+  top: 12px; left: 12px; right: 12px;
+  z-index: 10;
+}
+.mapa-buscador-campo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.mapa-buscador-campo svg { flex-shrink: 0; fill: var(--texto-bajo); width: 18px; height: 18px; }
+.mapa-buscador-input {
+  flex: 1; min-width: 0;
+  background: none; border: none; outline: none;
+  color: var(--texto-alto);
+  font-size: 14px;
+}
+.mapa-buscador-input::placeholder { color: var(--texto-bajo); }
+
+.mapa-buscador-resultados {
+  margin-top: 8px;
+  max-height: min(50vh, 360px);
+  overflow-y: auto;
+  border-radius: 16px;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.mapa-resultado-item {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: none;
+  background: none;
+  color: var(--texto-alto);
+  font-size: 14px;
+  display: block;
+  border-bottom: 1px solid var(--div-oscuro);
+}
+.mapa-resultado-item:last-child { border-bottom: none; }
+.mapa-resultado-vacio {
+  padding: 16px 14px;
+  color: var(--texto-bajo);
+  font-size: 13.5px;
+}
+
+/* ── Detalle de edificio (bottom sheet) ─────────────────────────── */
+
+.mapa-detalle-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 700;
+  display: flex;
+  align-items: flex-end;
+}
+.mapa-detalle-hoja {
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bg-card-claro, #fff);
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 24px 32px;
+}
+.mapa-detalle-agarradera {
+  width: 40px; height: 4px;
+  border-radius: 10px;
+  background: #D1D1D6;
+  margin: 0 auto 16px;
+}
+.mapa-detalle-nombre {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1B365D;
+  margin-bottom: 8px;
+}
+.mapa-detalle-cuerpo {
+  color: #3A3A3C;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.mapa-detalle-cuerpo b { color: #1B365D; }
+.mapa-detalle-cuerpo li { margin-left: 18px; margin-bottom: 4px; }
+.mapa-detalle-cuerpo p { margin-bottom: 8px; }
+
+/* Popup de Leaflet — restyle para que combine con el tema oscuro */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card-oscuro);
+  color: var(--texto-alto);
+  border-radius: 12px;
+}
+.leaflet-popup-tip { background: var(--bg-card-oscuro); }
+.leaflet-popup-content { margin: 12px 14px; font-size: 13px; }
+.mapa-popup-titulo { font-weight: 700; margin-bottom: 3px; }
+.mapa-popup-snippet { color: var(--texto-medio); font-size: 12px; }
+.mapa-popup-link { color: var(--accent); font-size: 12px; margin-top: 4px; display: inline-block; }

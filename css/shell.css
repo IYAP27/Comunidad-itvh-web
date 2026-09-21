@@ -1,0 +1,842 @@
+/* ═════════════════════════════════════════════════════════════════
+   shell.css
+   Estilos del shell principal (AppBar + TabBar + Drawer), banner de
+   notificaciones, ajustes, historiales, y las pantallas informativas
+   del drawer (Conoce el plantel, Historia, Oferta educativa,
+   Carreras, PDF viewer, Donaciones).
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ── Colores auxiliares usados solo aquí ── */
+:root {
+  --bg-app-oscuro: #000000;
+  --bg-app-claro:  #F2F2F7;
+  --bg-card-oscuro: #1C1C1E;
+  --bg-card-claro:  #FFFFFF;
+  --div-oscuro: rgba(255,255,255,0.10);
+  --div-claro:  rgba(0,0,0,0.12);
+  --accent-donaciones: #9C6B3E;
+}
+
+/* Estas mismas variables ("-oscuro") se usan en ~40 lugares de este
+   archivo y de social.css (appbar, drawer, tabbar, post-card...) sin
+   que cada selector tenga su propio "html.tema-claro .selector {}".
+   En vez de escribir 40 overrides, se reasignan aquí los NOMBRES
+   "-oscuro" para que apunten a los valores claros cuando el modo
+   claro está activo — así el cambio se propaga solo a todo lo que
+   ya usa var(--bg-card-oscuro), var(--bg-app-oscuro), var(--div-oscuro),
+   sin tocar cada regla una por una. Antes de este bloque, esas partes
+   se quedaban negras sin importar el toggle "Modo oscuro".
+   Ojo: como :root y html.tema-claro apuntan al mismo elemento <html>,
+   html.tema-claro (más específico) gana sobre :root cuando aplica. */
+html.tema-claro {
+  --bg-app-oscuro: var(--bg-app-claro);
+  --bg-card-oscuro: var(--bg-card-claro);
+  --div-oscuro: var(--div-claro);
+}
+
+html.tema-claro body { background: var(--bg-app-claro); color: #000; }
+html.tema-oscuro body { background: var(--bg-app-oscuro); color: #fff; }
+
+/* ═══════════════════════ SHELL: APPBAR + TABBAR ═══════════════════ */
+
+.shell-app {
+  height: 100dvh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shell-appbar {
+  min-height: 70px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 0 16px;
+  background: var(--bg-card-oscuro);
+  border-bottom: 1px solid var(--div-oscuro);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+/* Agrupa: [logo + buscar] pegados a la izquierda ... [notif + avatar]
+   pegados a la derecha. El margin-left:auto en notif "empuja" todo lo
+   que sigue (notif + avatar) hasta el borde derecho, dejando el grupo
+   logo+buscar tal cual quedó a la izquierda por el flex-start. */
+#btn-notif {
+  margin-left: auto;
+}
+
+.btn-icono {
+  font-size: 20px;
+  color: var(--texto-alto);
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.shell-logo { height: 33px; object-fit: contain; }
+
+.shell-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-borde);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-suave);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+.shell-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.shell-tabbar {
+  /* Ahora vive DENTRO de .shell-appbar (mismo <header>) para que en
+     escritorio icons + logo + avatar puedan compartir una sola barra.
+     En mobile, este mismo <nav> se manda a su propia línea dentro del
+     header (que ahora permite flex-wrap) con "order" + flex-basis,
+     así se ve exactamente igual que antes: appbar arriba, píldora
+     de iconos justo debajo. */
+  order: 3;
+  flex-basis: 100%;
+  display: flex;
+  gap: 2px;
+  margin: 8px 16px 10px;
+  padding: 3px;
+  background: #2C2C2E;
+  border-radius: 12px;
+}
+html.tema-claro .shell-tabbar {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.shell-tab {
+  flex: 1;
+  padding: 10px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  transition: background 0.15s;
+}
+.shell-tab svg {
+  width: 21px;
+  height: 21px;
+  fill: var(--texto-bajo);
+  transition: fill 0.15s;
+}
+.shell-tab.activa {
+  background: #3A3A3C;
+}
+html.tema-claro .shell-tab.activa {
+  background: rgba(0, 0, 0, 0.10);
+}
+.shell-tab.activa svg {
+  fill: var(--accent);
+}
+
+.shell-tab-contenido {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+/* En pantallas muy angostas, el appbar ahora trae 5 elementos (☰, logo,
+   buscar, notificaciones, avatar) — se encoge un poco el logo y los
+   botones de icono para que no se amontonen. */
+@media (max-width: 420px) {
+  .shell-logo { height: 24px; }
+  .shell-appbar .feed-icono-btn { width: 32px; height: 32px; }
+  .shell-appbar .feed-icono-btn svg { width: 17px; height: 17px; }
+}
+
+.shell-tab-cargando,
+.shell-tab-placeholder {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--texto-medio);
+  font-size: 14px;
+  text-align: center;
+  padding: 32px;
+}
+
+/* ═══════════════════════ DRAWER (panel lateral) ═══════════════════ */
+
+.shell-drawer-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 40;
+}
+
+.shell-drawer {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: min(320px, 85vw);
+  background: var(--bg-card-oscuro);
+  z-index: 50;
+  overflow-y: auto;
+  padding: 20px 16px;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+}
+html.tema-claro .shell-drawer { background: var(--bg-card-claro); }
+.shell-drawer.abierto { transform: translateX(0); }
+
+.drawer-titulo {
+  font-size: 22px;
+  color: var(--texto-alto);
+  margin-bottom: 20px;
+}
+
+.drawer-seccion {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.1px;
+  color: var(--texto-bajo);
+  margin: 20px 0 10px;
+}
+.drawer-seccion:first-of-type { margin-top: 0; }
+
+.drawer-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 88px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  text-align: left;
+  color: #fff;
+}
+.drawer-tile::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.42);
+  border-radius: 16px;
+  z-index: 0;
+}
+.drawer-tile.solido {
+  background-image: none !important;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  min-height: auto;
+}
+html.tema-claro .drawer-tile.solido {
+  background: var(--bg-card-claro);
+  border-color: var(--div-claro);
+  color: var(--texto-alto);
+}
+html.tema-claro .drawer-tile-texto small { opacity: 0.6; }
+.drawer-tile.solido::before { display: none; }
+.drawer-tile-icono, .drawer-tile-texto {
+  position: relative; z-index: 1;
+}
+.drawer-tile-icono {
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.drawer-tile.solido .drawer-tile-icono { background: var(--accent-suave); }
+.drawer-tile-texto { display: flex; flex-direction: column; gap: 2px; }
+.drawer-tile-texto strong { font-size: 14px; font-weight: 600; }
+.drawer-tile-texto small { font-size: 12px; opacity: 0.7; }
+
+/* ── Tile "hero" (Conoce el plantel) ──
+   FIX ago 2026: drawer.js ya usaba esta clase (junto con
+   .drawer-grid-fila / .drawer-tile-grid más abajo) pero nunca se
+   definió en CSS — el botón colapsaba a la altura de su texto sin
+   imagen de fondo visible ni overlay, y quedaba pisado por la fila
+   de abajo (ver captura: "Conoce el plantel" solapado con "Un poco
+   de historia" / "Oferta educativa"). Reutiliza .drawer-tile-icono
+   y .drawer-tile-texto (mismos spans que ya pinta drawer.js) pero
+   con su propio contenedor más alto y con el texto anclado abajo,
+   estilo "hero card" con imagen de fondo. */
+.drawer-tile-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  min-height: 150px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+  text-align: left;
+  color: #fff;
+  overflow: hidden;
+}
+.drawer-tile-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.15) 65%, rgba(0,0,0,0.05) 100%);
+  z-index: 0;
+}
+.drawer-tile-hero .drawer-tile-icono {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2px;
+}
+.drawer-tile-hero .drawer-tile-texto {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Fila de dos tiles pequeños (Historia / Oferta educativa) ── */
+.drawer-grid-fila {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.drawer-tile-grid {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 100px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  color: #fff;
+  overflow: hidden;
+}
+.drawer-tile-grid::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 65%, rgba(0,0,0,0.05) 100%);
+  z-index: 0;
+}
+.drawer-tile-grid-icono {
+  position: relative;
+  z-index: 1;
+  font-size: 17px;
+}
+.drawer-tile-grid-label {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.drawer-plataformas {
+  display: flex;
+  gap: 10px;
+}
+.plataforma-btn {
+  flex: 1;
+  height: 84px;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px;
+}
+html.tema-claro .plataforma-btn { background: var(--bg-card-claro); border-color: var(--div-claro); }
+.plataforma-btn img { height: 34px; object-fit: contain; }
+.plataforma-btn small { font-size: 11px; color: var(--texto-medio); }
+
+.drawer-toggle-tema {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+html.tema-claro .drawer-toggle-tema { background: var(--bg-card-claro); border-color: var(--div-claro); }
+.drawer-toggle-label { flex: 1; font-size: 15px; }
+
+.switch { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.2);
+  border-radius: 26px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+html.tema-claro .slider { background: rgba(0,0,0,0.15); }
+.slider::before {
+  content: '';
+  position: absolute;
+  height: 20px; width: 20px;
+  left: 3px; bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.switch input:checked + .slider { background: var(--accent); }
+.switch input:checked + .slider::before { transform: translateX(18px); }
+
+.drawer-pie {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--div-oscuro);
+}
+html.tema-claro .drawer-pie { border-top-color: var(--div-claro); }
+.drawer-pie p { font-size: 13px; font-weight: 600; color: var(--texto-medio); }
+.drawer-pie-sub { font-size: 11px; color: var(--texto-bajo); margin-top: 2px; }
+
+/* ═══════════════════════ BANNER DE NOTIFICACIÓN ═══════════════════ */
+
+.banner-toast {
+  position: fixed;
+  top: 12px; left: 12px; right: 12px;
+  max-width: 460px;
+  margin: 0 auto;
+  background: #2C2C2E;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  z-index: 100;
+  transform: translateY(-120%);
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+.banner-toast.visible { transform: translateY(0); opacity: 1; }
+.banner-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: #3A3A3C;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+.banner-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.banner-texto { flex: 1; min-width: 0; }
+.banner-titulo { font-size: 11px; color: var(--texto-bajo); }
+.banner-cuerpo {
+  font-size: 13px; color: var(--texto-alto);
+  overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.banner-chevron { font-size: 20px; color: var(--texto-bajo); }
+
+/* ═══════════════════════ PUSHED SCREENS (overlays) ═══════════════════ */
+
+.pushed-screen, .dialog-overlay, .pdf-viewer-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg-app-oscuro);
+  /* Antes: z-index:60 — menor que .marketplace-tabbar (100), por eso
+     esa barra flotante se seguía viendo encima de estas pantallas de
+     pantalla completa (Conoce el plantel, Historia, Donaciones...).
+     Sube por encima de CUALQUIER elemento flotante de una pestaña. */
+  z-index: 500;
+  overflow-y: auto;
+}
+
+.appbar-simple, .appbar-hero {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--bg-card-oscuro);
+  border-bottom: 1px solid var(--div-oscuro);
+  position: sticky; top: 0; z-index: 5;
+}
+.appbar-hero { background: transparent; border: none; position: absolute; width: 100%; }
+.appbar-simple h2 { font-size: 17px; flex: 1; }
+.btn-volver, .btn-volver-hero, .btn-cerrar-x {
+  font-size: 24px;
+  color: var(--texto-alto);
+  width: 32px; height: 32px;
+}
+.btn-volver-hero {
+  background: rgba(0,0,0,0.4);
+  border-radius: 50%;
+  margin: 12px;
+}
+.btn-accion-accent { color: var(--accent); font-weight: 600; font-size: 14px; margin-left: auto; }
+.btn-compartir, .btn-descargar { font-size: 18px; margin-left: 8px; }
+.appbar-titulo-hero { font-size: 16px; font-weight: 600; }
+.pdf-titulo { font-size: 15px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid rgba(0,198,255,0.25);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+  margin: 40px auto;
+}
+
+/* ═══════════════════════ AJUSTES ═══════════════════ */
+
+.section-label-ajustes {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  color: var(--texto-bajo);
+  margin: 20px 16px 8px;
+}
+.card-group {
+  margin: 0 16px 4px;
+  background: var(--bg-card-oscuro);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--div-oscuro);
+}
+.settings-tile, .settings-row {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--texto-alto);
+  text-align: left;
+}
+.settings-tile.destructivo { color: var(--color-error); }
+.settings-row-title { font-size: 14px; color: var(--texto-alto); }
+.settings-row-sub { font-size: 11px; color: var(--texto-bajo); margin-top: 1px; }
+.chevron { margin-left: auto; color: var(--texto-bajo); }
+.divider-inset { border: none; border-top: 1px solid var(--div-oscuro); margin: 0 16px; }
+.pie-ajustes { text-align: center; margin: 32px 0 20px; }
+.pie-ajustes p { font-size: 13px; color: var(--texto-medio); }
+.pie-sub { font-size: 11px; color: var(--texto-bajo); margin-top: 2px; }
+.input-ajuste {
+  width: 100%; padding: 12px 14px; background: var(--bg-card-oscuro);
+  border: 1px solid var(--div-oscuro); border-radius: 10px;
+  color: var(--texto-alto); font-size: 14px;
+}
+.hint-text { font-size: 12px; color: var(--texto-bajo); margin: 8px 16px; }
+
+.dialog-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center; z-index: 200;
+}
+.dialog-box {
+  background: var(--bg-card-oscuro);
+  border-radius: 16px; padding: 20px; max-width: 340px; width: 90%;
+}
+.dialog-box h3 { margin-bottom: 10px; }
+.dialog-box p { font-size: 13px; color: var(--texto-medio); margin-bottom: 10px; line-height: 1.5; }
+.dialog-acciones { display: flex; gap: 10px; margin-top: 16px; }
+.dialog-acciones button { flex: 1; padding: 10px; border-radius: 10px; font-weight: 600; font-size: 13px; }
+#btn-cancelar-eliminar { background: rgba(255,255,255,0.08); color: var(--texto-alto); }
+#btn-confirmar-eliminar { background: var(--color-error); color: #fff; }
+#btn-confirmar-eliminar:disabled { opacity: 0.4; }
+
+/* ═══════════════════════ HISTORIALES ═══════════════════ */
+
+.texto-vacio { text-align: center; color: var(--texto-medio); padding: 40px 20px; }
+.estado-vacio { text-align: center; padding: 60px 24px; font-size: 40px; }
+.vacio-titulo { font-size: 16px; font-weight: 600; margin: 12px 0 6px; color: var(--texto-alto); }
+.vacio-msg { font-size: 13px; color: var(--texto-bajo); }
+.grupo-fecha-label { font-size: 11px; font-weight: 600; color: var(--texto-bajo); margin: 20px 16px 8px; text-transform: uppercase; }
+.historial-item { padding: 0 16px 16px; }
+.historial-etiqueta { font-size: 13px; color: var(--texto-medio); margin-bottom: 6px; }
+.historial-tiempo { font-size: 11px; color: var(--texto-bajo); margin-top: 6px; }
+.burbuja-mi-comentario {
+  background: var(--accent-suave); color: var(--texto-alto);
+  padding: 10px 12px; border-radius: 12px; font-size: 13px; margin-bottom: 6px;
+}
+
+/* ═══════════════════════ CONOCE EL PLANTEL / HISTORIA ═══════════════════ */
+
+.hero-plantel, .hero-historia {
+  height: 220px; position: relative;
+  background: linear-gradient(160deg, #1a1a1a, #000);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.hero-historia-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+.logo-itvh { height: 64px; margin-bottom: 10px; position: relative; z-index: 1; }
+.hero-subtitulo { font-size: 13px; color: var(--texto-medio); position: relative; z-index: 1; }
+.badge-fecha {
+  position: absolute; bottom: 12px; left: 16px;
+  background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 20px;
+  font-size: 12px; color: #fff;
+}
+.seccion-plantel { padding: 20px 20px 4px; }
+.seccion-plantel h1 { font-size: 22px; margin-bottom: 4px; }
+.acento { color: var(--accent); }
+.subtitulo-historia { font-size: 13px; color: var(--texto-medio); margin-bottom: 16px; }
+.ficha-rapida { margin-bottom: 8px; }
+.ficha-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; font-size: 13px; }
+.ficha-row.link { cursor: pointer; }
+.ficha-label { color: var(--texto-bajo); width: 90px; flex-shrink: 0; }
+.ficha-valor { color: var(--texto-alto); flex: 1; }
+.divisor { border: none; border-top: 1px solid var(--div-oscuro); margin: 16px 0; }
+.titulo-seccion { font-size: 17px; margin: 20px 0 10px; }
+.parrafo { font-size: 13.5px; line-height: 1.6; color: var(--texto-medio); margin-bottom: 12px; }
+
+.tarjeta-mv { padding: 16px; border-radius: 14px; margin-bottom: 12px; }
+.tarjeta-mision { background: rgba(0,198,255,0.08); border: 1px solid rgba(0,198,255,0.2); }
+.tarjeta-vision { background: rgba(52,199,89,0.08); border: 1px solid rgba(52,199,89,0.2); }
+.mv-titulo { font-weight: 700; margin-bottom: 8px; }
+.mv-texto { font-size: 13px; line-height: 1.6; color: var(--texto-medio); }
+.chips-valores { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip-valor { padding: 6px 12px; background: var(--bg-card-oscuro); border-radius: 20px; font-size: 12px; border: 1px solid var(--div-oscuro); }
+
+.contacto-tile { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--div-oscuro); cursor: pointer; }
+.contacto-icono { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.contacto-icono.rojo { background: rgba(255,69,58,0.15); }
+.contacto-icono.verde { background: rgba(52,199,89,0.15); }
+.contacto-icono.azul { background: rgba(0,122,255,0.15); }
+.contacto-icono.morado { background: rgba(175,82,222,0.15); }
+.contacto-titulo { font-size: 13.5px; font-weight: 600; }
+.contacto-sub { font-size: 12px; color: var(--texto-bajo); }
+.mapa-placeholder { text-align: center; padding: 24px; background: var(--bg-card-oscuro); border-radius: 12px; margin-top: 12px; cursor: pointer; }
+.btn-ver-mapa { color: var(--accent); font-size: 13px; margin-left: 6px; }
+.pie-fuente { text-align: center; font-size: 11px; color: var(--texto-bajo); padding: 24px 20px; line-height: 1.6; }
+
+.galeria-principal { position: relative; border-radius: 14px; overflow: hidden; }
+.galeria-imagen-grande { width: 100%; height: 220px; object-fit: cover; display: block; }
+.galeria-contador { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 11px; }
+.nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; }
+.nav-arrow.izq { left: 10px; }
+.nav-arrow.der { right: 10px; }
+.nav-arrow.oculta { display: none; }
+.galeria-descripcion { font-size: 12.5px; color: var(--texto-medio); margin: 8px 0; text-align: center; }
+.galeria-miniaturas { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.miniatura { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; opacity: 0.5; flex-shrink: 0; }
+.miniatura.activa { opacity: 1; border: 2px solid var(--accent); }
+.galeria-dots { display: flex; justify-content: center; gap: 5px; margin-top: 8px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--texto-bajo); }
+.dot.activo { background: var(--accent); }
+
+/* ── Timeline (historia-plantel-screen) ── */
+.timeline { position: relative; padding-left: 6px; margin-top: 16px; }
+.timeline-item { display: flex; gap: 14px; position: relative; }
+.timeline-nodo {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; z-index: 1;
+}
+.timeline-nodo.tema-ambar { background: rgba(255,176,32,0.2); }
+.timeline-nodo.tema-teal  { background: rgba(0,198,255,0.2); }
+.timeline-nodo.tema-coral { background: rgba(255,107,107,0.2); }
+.timeline-linea { position: absolute; left: 18px; top: 36px; bottom: -20px; width: 2px; background: var(--div-oscuro); }
+.timeline-contenido { flex: 1; padding-bottom: 28px; }
+.timeline-year { font-size: 12px; font-weight: 700; }
+.timeline-year.tema-ambar-text { color: var(--color-ambar); }
+.timeline-year.tema-teal-text  { color: var(--accent); }
+.timeline-year.tema-coral-text { color: var(--color-error); }
+.timeline-title { font-size: 15px; font-weight: 700; margin: 4px 0 6px; }
+.timeline-body { font-size: 13px; color: var(--texto-medio); line-height: 1.6; margin-bottom: 10px; }
+.timeline-img-wrap { border-radius: 12px; overflow: hidden; margin-bottom: 6px; }
+.timeline-img { width: 100%; height: 160px; object-fit: cover; display: block; }
+.timeline-img-wrap.sin-imagen { display: none; }
+.timeline-caption { font-size: 11px; color: var(--texto-bajo); font-style: italic; }
+
+.banner-final {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--accent-suave); border-radius: 16px; padding: 18px;
+  margin: 24px 0;
+}
+.banner-icono { font-size: 28px; }
+.banner-numero { font-size: 20px; font-weight: 800; color: var(--accent); }
+
+/* ═══════════════════════ OFERTA EDUCATIVA ═══════════════════ */
+
+.search-bar-wrap { padding: 12px 16px; }
+#input-busqueda-carrera {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  background: var(--bg-card-oscuro); border: 1px solid var(--div-oscuro);
+  color: var(--texto-alto); font-size: 14px;
+}
+.chips-filtro-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; }
+.filter-chip {
+  padding: 7px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 500;
+  background: var(--bg-card-oscuro); border: 1px solid var(--div-oscuro); color: var(--texto-medio);
+  white-space: nowrap; flex-shrink: 0;
+}
+.filter-chip.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.stats-oferta { display: flex; gap: 10px; padding: 0 16px 16px; }
+.stat-card { flex: 1; padding: 14px; border-radius: 14px; text-align: center; font-size: 22px; font-weight: 800; }
+.stat-card span { display: block; font-size: 11px; font-weight: 500; color: var(--texto-bajo); margin-top: 2px; }
+.stat-primary { background: var(--accent-suave); color: var(--accent); }
+.stat-secondary { background: rgba(52,199,89,0.1); color: var(--color-exito); }
+.area-header { display: flex; align-items: center; gap: 10px; margin: 16px; }
+.area-pill { font-size: 12px; font-weight: 600; color: var(--texto-medio); white-space: nowrap; }
+.area-divider { flex: 1; border: none; border-top: 1px solid var(--div-oscuro); }
+.carrera-card {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 16px 8px; padding: 12px 14px;
+  background: var(--bg-card-oscuro); border-radius: 14px; border: 1px solid var(--div-oscuro);
+}
+.carrera-icono { font-size: 22px; }
+.carrera-info { flex: 1; }
+.carrera-nombre { font-size: 13.5px; font-weight: 600; }
+.carrera-siglas { font-size: 11px; color: var(--texto-bajo); }
+
+/* ═══════════════════════ CARRERA SCREEN + COMPONENTES ═══════════════════ */
+
+.carrera-loading { min-height: 40vh; display: flex; align-items: center; justify-content: center; }
+.carrera-hero { position: relative; padding: 60px 20px 24px; overflow: hidden; }
+.carrera-hero-icono { position: absolute; right: -10px; top: -10px; font-size: 120px; }
+.carrera-hero-texto { position: relative; z-index: 1; }
+.chip-depto { display: inline-block; padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; margin-bottom: 8px; }
+.carrera-hero-texto h1 { font-size: 22px; line-height: 1.3; }
+.carrera-contenido { padding: 20px; }
+
+.cards-resumen-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.info-card { flex: 1; padding: 14px; border-radius: 14px; background: color-mix(in srgb, var(--card-color) 12%, transparent); }
+.info-card-icono { font-size: 18px; }
+.info-card-titulo { font-size: 11px; color: var(--texto-bajo); margin: 6px 0 2px; }
+.info-card-contenido { font-size: 13px; font-weight: 700; }
+
+.section-title { display: flex; align-items: center; gap: 8px; margin: 24px 0 12px; }
+.section-title-bar { width: 4px; height: 18px; border-radius: 2px; }
+.section-title h3 { font-size: 16px; }
+
+.objetivo-box { padding: 14px; border-radius: 12px; background: color-mix(in srgb, var(--obj-color) 8%, transparent); border: 1px solid color-mix(in srgb, var(--obj-color) 20%, transparent); margin-bottom: 8px; }
+.objetivo-box p { font-size: 13.5px; line-height: 1.6; color: var(--texto-medio); }
+
+.objetivo-item { display: flex; gap: 12px; margin-bottom: 14px; }
+.objetivo-numero { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.objetivo-titulo { font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
+.objetivo-desc { font-size: 12.5px; color: var(--texto-bajo); line-height: 1.5; }
+
+.perfil-section { margin-bottom: 8px; }
+.perfil-item { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+.perfil-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+.perfil-item p { font-size: 13px; line-height: 1.55; color: var(--texto-medio); }
+
+.reticula-item, .materia-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; background: var(--bg-card-oscuro); border-radius: 12px;
+  margin-bottom: 8px; cursor: pointer; border: 1px solid var(--div-oscuro);
+}
+.reticula-icono { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.reticula-info { flex: 1; }
+.reticula-nombre, .materia-nombre { font-size: 13px; font-weight: 500; flex: 1; }
+.reticula-clave { font-size: 11px; color: var(--texto-bajo); }
+.materia-item.sin-url { cursor: default; opacity: 0.7; }
+
+.expansion-tile { margin-bottom: 8px; border-radius: 12px; overflow: hidden; }
+.expansion-header {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border: 1px solid; border-radius: 12px; cursor: pointer; list-style: none;
+}
+.expansion-header::-webkit-details-marker { display: none; }
+.expansion-numero, .expansion-icono { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.expansion-titulo { font-size: 13.5px; font-weight: 600; }
+.expansion-sub { font-size: 11px; color: var(--texto-bajo); }
+.expansion-body { padding: 10px 4px 4px; }
+
+.aviso-card {
+  display: flex; gap: 10px; padding: 14px;
+  background: rgba(255,176,32,0.08); border: 1px solid rgba(255,176,32,0.25);
+  border-radius: 12px; margin-bottom: 8px;
+}
+.aviso-titulo { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.aviso-texto { font-size: 12px; color: var(--texto-medio); line-height: 1.5; margin-bottom: 6px; }
+.aviso-nota { font-size: 11px; color: var(--texto-bajo); font-style: italic; }
+
+/* ═══════════════════════ PDF VIEWER ═══════════════════ */
+
+.pdf-body { position: relative; height: calc(100vh - 56px); }
+.pdf-iframe { width: 100%; height: 100%; border: none; }
+.pdf-loading, .pdf-error {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 20px;
+  background: var(--bg-app-oscuro);
+}
+.pdf-error.hidden, .pdf-loading.hidden { display: none; }
+.pdf-error-sub { font-size: 12px; color: var(--texto-bajo); }
+#btn-reintentar { margin-top: 10px; padding: 10px 20px; background: var(--accent); color: #fff; border-radius: 10px; font-weight: 600; }
+
+/* ═══════════════════════ DONACIONES ═══════════════════ */
+
+.donaciones-contenido { padding: 20px; text-align: center; }
+.donaciones-logo-wrap { position: relative; width: 84px; height: 84px; margin: 16px auto 20px; }
+.donaciones-logo {
+  width: 84px; height: 84px; border-radius: 20px;
+  background: var(--bg-card-oscuro); border: 1px solid var(--div-oscuro);
+  display: flex; align-items: center; justify-content: center; padding: 10px;
+}
+.donaciones-logo img { width: 100%; object-fit: contain; }
+.donaciones-badge {
+  position: absolute; bottom: -6px; right: -6px;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent-donaciones); border: 3px solid var(--bg-app-oscuro);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.donaciones-titulo { font-size: 22px; margin-bottom: 12px; }
+.donaciones-descripcion { font-size: 13.5px; color: var(--texto-medio); line-height: 1.6; margin-bottom: 16px; }
+.donaciones-aviso-verde {
+  display: flex; align-items: center; gap: 10px; text-align: left;
+  padding: 10px 14px; background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.25);
+  border-radius: 12px; margin-bottom: 24px; font-size: 12.5px; color: var(--texto-alto);
+}
+.donaciones-seccion-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; color: var(--texto-bajo); text-align: left; margin: 0 0 10px; }
+
+.campo-copiable {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; background: var(--bg-card-oscuro); border: 1px solid var(--div-oscuro);
+  border-radius: 12px; margin-bottom: 10px; text-align: left;
+}
+.campo-copiable.destacado { border-color: var(--accent-donaciones); border-width: 1.4px; padding: 16px 14px; }
+.campo-copiable-texto { display: flex; flex-direction: column; gap: 3px; }
+.campo-copiable-label { font-size: 11px; color: var(--texto-bajo); }
+.campo-copiable-valor { font-size: 15px; font-weight: 700; }
+.campo-copiable-valor.mono { font-family: monospace; font-size: 17px; letter-spacing: 0.5px; }
+.campo-copiable-icono { font-size: 16px; }
+
+.donaciones-datos-bloque { text-align: left; padding: 12px 14px; background: var(--bg-card-oscuro); border: 1px solid var(--div-oscuro); border-radius: 12px; margin-bottom: 20px; }
+.fila-dato { display: flex; gap: 10px; padding: 4px 0; font-size: 13.5px; }
+.fila-dato-label { width: 60px; color: var(--texto-bajo); font-size: 12px; }
+.fila-dato-valor { font-weight: 600; }
+
+.donaciones-caja-ambar {
+  text-align: left; padding: 14px; border-radius: 14px;
+  background: color-mix(in srgb, var(--accent-donaciones) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-donaciones) 25%, transparent);
+  margin-bottom: 16px;
+}
+.donaciones-caja-titulo { font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
+.donaciones-caja-texto { font-size: 12.5px; color: var(--texto-medio); line-height: 1.5; margin-bottom: 12px; }
+.input-usuario-donacion {
+  width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px;
+  background: var(--bg-card-oscuro); border: 1px solid var(--div-oscuro); color: var(--texto-alto); font-size: 13.5px;
+}
+
+.btn-outline-accent {
+  width: 100%; padding: 12px; border-radius: 12px; margin-bottom: 24px;
+  border: 1px solid color-mix(in srgb, var(--accent-donaciones) 40%, transparent);
+  color: var(--accent-donaciones); font-weight: 600; font-size: 13.5px;
+}
+.btn-primario-donaciones {
+  width: 100%; padding: 14px; border-radius: 14px; margin-bottom: 10px;
+  background: var(--accent-donaciones); color: #fff; font-weight: 700; font-size: 14.5px;
+}
+
+.toast-simple {
+  position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 10px);
+  background: #2C2C2E; color: #fff; padding: 10px 18px; border-radius: 12px;
+  font-size: 13px; opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 300;
+}
+.toast-simple.visible { opacity: 1; transform: translate(-50%, 0); }
+/* Ajustes: filas con switch sin convertir el label en botón gigante. */
+.settings-row-toggle{ display:flex; align-items:center; gap:12px; padding:12px 14px; }
+.settings-row-toggle>div{ flex:1; min-width:0; }
+.settings-row-toggle .switch{ margin-left:auto; }

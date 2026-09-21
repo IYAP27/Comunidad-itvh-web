@@ -1,0 +1,75 @@
+/* ═════════════════════════════════════════════════════════════════
+   variables.css
+   Tokens del sistema de diseño — mismos valores que ya usa la app
+   Flutter (acento cian 0xFF00C6FF, glassmorphism sobre fondo oscuro).
+   ═════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Tipografía ── */
+  --fuente-titulos: 'Space Grotesk', sans-serif;
+  --fuente-texto:   'Inter', sans-serif;
+
+  /* ── Color de acento ── */
+  --accent:       #00C6FF;
+  --accent-suave: rgba(0, 198, 255, 0.15);
+  --accent-borde: rgba(0, 198, 255, 0.7);
+
+  /* ── Semánticos ── */
+  --color-error:  #FF6B6B;
+  --color-exito:  #34C759;
+  --color-ambar:  #FFB020;
+  --color-rojo:   #FF453A;
+
+  /* ── Fondo ── */
+  --bg-app:       #000000;
+  --bg-tarjeta:   rgba(255, 255, 255, 0.08);
+  --borde-tarjeta: rgba(255, 255, 255, 0.18);
+
+  /* ── Texto sobre fondo oscuro ── */
+  --texto-alto:   rgba(255, 255, 255, 0.95);
+  --texto-medio:  rgba(255, 255, 255, 0.60);
+  --texto-bajo:   rgba(255, 255, 255, 0.38);
+  --texto-minimo: rgba(255, 255, 255, 0.30);
+
+  /* ── Campos de formulario ── */
+  --campo-bg:          rgba(255, 255, 255, 0.06);
+  --campo-bg-focus:    rgba(255, 255, 255, 0.12);
+  --campo-borde:       rgba(255, 255, 255, 0.12);
+
+  /* ── Radios y espaciado ── */
+  --radio-tarjeta: 24px;
+  --radio-campo:   14px;
+  --radio-boton:   14px;
+
+  /* ── Sombra ── */
+  --sombra-tarjeta: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   MODO CLARO
+   El toggle "Modo oscuro" (ver theme.js) pone la clase tema-claro /
+   tema-oscuro en <html>. Antes de esto, SOLO existía la paleta
+   oscura de arriba — nadie había redefinido estas mismas variables
+   para tema-claro, así que al activarlo el fondo cambiaba a blanco
+   pero el texto (pensado para verse sobre negro) seguía siendo casi
+   blanco → texto invisible. Este bloque redefine los mismos nombres
+   de variable con valores pensados para fondo claro; como todo el
+   CSS del proyecto ya usa var(--texto-alto), var(--bg-tarjeta), etc.
+   en vez de colores directos, el cambio se propaga solo.
+   ═════════════════════════════════════════════════════════════════ */
+html.tema-claro {
+  --bg-app:       #F2F2F7;
+  --bg-tarjeta:   #FFFFFF;
+  --borde-tarjeta: rgba(0, 0, 0, 0.08);
+
+  --texto-alto:   rgba(0, 0, 0, 0.90);
+  --texto-medio:  rgba(0, 0, 0, 0.60);
+  --texto-bajo:   rgba(0, 0, 0, 0.42);
+  --texto-minimo: rgba(0, 0, 0, 0.32);
+
+  --campo-bg:       rgba(0, 0, 0, 0.04);
+  --campo-bg-focus: rgba(0, 0, 0, 0.07);
+  --campo-borde:    rgba(0, 0, 0, 0.14);
+
+  --sombra-tarjeta: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
